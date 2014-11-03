@@ -1,0 +1,14 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'tab-smart-sort'
+      'submenu': [
+        {
+          'label': 'Toggle'
+          'command': 'tab-smart-sort:toggle'
+        }
+      ]
+    ]
+  }
+]
