@@ -1,3 +1,7 @@
+## 0.1.2 - 2014-11-3
+
+- fixed case sensitivity
+
 ## 0.1.1 - 2014-11-3
 
 - fixed getSortStr

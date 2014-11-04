@@ -47,7 +47,7 @@ getSortStr = (item) ->
       when 'dir'  then sortStr += pathUtil.dirname(path)  + ' '
       when 'base' then sortStr += pathUtil.basename(path) + ' '
       when 'ext'  then sortStr += pathUtil.extname(path)  + ' '
-  if caseSensitive then sortStr = sortStr.toLowerCase()
+  if not caseSensitive then sortStr = sortStr.toLowerCase()
   sortStr
 
 addItem = (newItem) ->
