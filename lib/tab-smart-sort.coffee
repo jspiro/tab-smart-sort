@@ -4,49 +4,43 @@
 
 pathUtil = require 'path'
 
-sortTerms = caseSensitive = originalAddItem = null
+sortTerms = caseSensitive = placeSpecialTabsOnRight = null
+originalAddItem = panePrototype = null
 
 class TabSmartSort
   
   configDefaults:
-    enableByEachPaneInsteadOfGlobally: no
     caseSensitive: no
     ordering: 'dir, ext, base'
+    placeSpecialTabsOnRight: no
   
   activate: ->
-    sortTerms = (term.replace(/[^a-zA-Z]/g, '') \
-      for term in atom.config.get('tab-smart-sort.ordering').split /[\s,;:-]/)
-    caseSensitive = atom.config.get 'tab-smart-sort.caseSensitive'
-
-    atom.commands.add 'atom-workspace', 'tab-smart-sort:toggle': => @toggle()
-
-  toggle: ->
-    if not (pane = atom.workspace.getActivePane()) then return
-    if pane.addItem isnt addItem then @hookAddItemAndSort pane
-    else @unhookAddItem pane
-    
-  hookAddItemAndSort: (pane) ->
-    originalAddItem = pane.addItem
-    pane.addItem = addItem
-    
-    #sort
-    
-    # set status bar
-  
-  unhookAddItem: (pane) ->
-    if pane.addItem is addItem 
-      pane.addItem = originalAddItem
+    setOrdering = (order) ->
+      sortTerms = (term.replace(/[^a-zA-Z]/g, '') for term in order.split /[\s,;:-]/)
       
-    # set status bar
+    caseSensitive           = atom.config.get 'tab-smart-sort.caseSensitive'
+    setOrdering               atom.config.get 'tab-smart-sort.ordering' 
+    placeSpecialTabsOnRight = atom.config.get 'tab-smart-sort.placeSpecialTabsOnRight'
     
+    @disp = []
+    @disp.push atom.config.observe 'tab-smart-sort.caseSensitive', 
+      (val) -> caseSensitive = val
+    @disp.push atom.config.observe 'tab-smart-sort.ordering', 
+      (val) -> setOrdering val
+    @disp.push atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight', 
+      (val) -> placeSpecialTabsOnRight = val
+    
+    panePrototype = atom.workspace.getActivePane().__proto__
+    originalAddItem = panePrototype.addItem
+    panePrototype.addItem = addItem
+
   deactivate: ->
-    for pane in atom.workspace.getPanes()
-      @unhookAddItem pane
-    
-    # set status bar
+    for disp in @disp then disp.dispose()
+    panePrototype.addItem = originalAddItem
   
 getSortStr = (item) ->
-  if not (path = item.getPath?()) then return '~~~~~~~~~'
+  if not (path = item.getPath?()) 
+    return (if placeSpecialTabsOnRight then '~~~~~~~~~' else '')
   sortStr = ''
   for term in sortTerms
     switch term

@@ -3,7 +3,6 @@
   "main": "./lib/tab-smart-sort",
   "version": "0.1.0",
   "description": "Sorts tabs into logical order as they are added.",
-  "activationCommands": {},
   "repository": "https://github.com/mark-hahn/tab-smart-sort",
   "license": "MIT",
   "engines": {
