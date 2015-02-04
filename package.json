@@ -6,8 +6,9 @@
   "repository": "https://github.com/mark-hahn/tab-smart-sort",
   "license": "MIT",
   "engines": {
-    "atom": ">0.130.0"
+    "atom": ">0.170.0"
   },
   "dependencies": {
+    "sub-atom": "*"
   }
 }

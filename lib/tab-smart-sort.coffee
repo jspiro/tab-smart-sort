@@ -2,54 +2,32 @@
   lib/tab-smart-sort.coffee
 ###
 
+SubAtom  = require 'sub-atom'
 pathUtil = require 'path'
 
-sortTerms = caseSensitive = placeSpecialTabsOnRight = null
-originalAddItem = panePrototype = null
+# these have to be in a closure so monkey-patched addItem works from core
+sortTerms = caseSensitive = placeSpecialTabsOnRight = originalAddItem = null
 
-class TabSmartSort
-  
-  configDefaults:
-    caseSensitive: no
-    ordering: 'dir, ext, base'
-    placeSpecialTabsOnRight: no
-  
-  activate: ->
-    setOrdering = (order) ->
-      sortTerms = (term.replace(/[^a-zA-Z]/g, '') for term in order.split /[\s,;:-]/)
-      
-    caseSensitive           = atom.config.get 'tab-smart-sort.caseSensitive'
-    setOrdering               atom.config.get 'tab-smart-sort.ordering' 
-    placeSpecialTabsOnRight = atom.config.get 'tab-smart-sort.placeSpecialTabsOnRight'
-    
-    @disp = []
-    @disp.push atom.config.observe 'tab-smart-sort.caseSensitive', 
-      (val) -> caseSensitive = val
-    @disp.push atom.config.observe 'tab-smart-sort.ordering', 
-      (val) -> setOrdering val
-    @disp.push atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight', 
-      (val) -> placeSpecialTabsOnRight = val
-    
-    panePrototype = atom.workspace.getActivePane().__proto__
-    originalAddItem = panePrototype.addItem
-    panePrototype.addItem = addItem
-
-  deactivate: ->
-    for disp in @disp then disp.dispose()
-    panePrototype.addItem = originalAddItem
-  
 getSortStr = (item) ->
   if not (path = item.getPath?()) 
     return (if placeSpecialTabsOnRight then '~~~~~~~~~' else '')
+  path = path.replace /\\/g, '/'
+  dirname  = pathUtil.dirname  path
+  basename = pathUtil.basename path 
+  extname  = pathUtil.extname  path
+    
   sortStr = ''
   for term in sortTerms
-    switch term
-      when 'dir'  then sortStr += pathUtil.dirname(path)  + ' '
-      when 'base' then sortStr += pathUtil.basename(path) + ' '
-      when 'ext'  then sortStr += pathUtil.extname(path)  + ' '
+    sortStr += ' ' + switch term
+      when 'filetree' then dirname.split(/\/|\\/g).join('/\u0000')
+      when 'dir'      then dirname
+      when 'base'     then pathUtil.basename path 
+      when 'ext'      then pathUtil.extname  path
+      else ''
   if not caseSensitive then sortStr = sortStr.toLowerCase()
+  console.log 'sortStr', sortStr
   sortStr
-
+  
 addItem = (newItem) ->
   newSortStr = getSortStr newItem
   lastSortStr = ''
@@ -58,5 +36,41 @@ addItem = (newItem) ->
     if lastSortStr <= newSortStr < sortStr then break
     lastSortStr = sortStr
   originalAddItem.call @, newItem, newIndex
+
+module.exports =
   
-module.exports = new TabSmartSort
+  config:
+    caseSensitive:
+      type: 'boolean'
+      default: no
+    ordering:
+      type: 'string'
+      default: 'filetree, dir, ext, base'
+    placeSpecialTabsOnRight:
+      type: 'boolean'
+      default: no
+
+  activate: ->      
+    @subs = new SubAtom
+    @subs.add atom.config.observe 'tab-smart-sort.caseSensitive',           (val) => 
+      caseSensitive = val
+      
+    @subs.add atom.config.observe 'tab-smart-sort.ordering',              (order) => 
+      order = order.toLowerCase()
+      sortTerms = (term.replace(/[^a-zA-Z]/g, '') for term in order.split /[\s,;:-]/)
+      
+    @subs.add atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight', (val) => 
+      placeSpecialTabsOnRight = val
+      
+    @subs.add atom.config.observe 'tab-smart-sort.activationOrder',         (val) => 
+      @activationOrder = val
+    
+    @panePrototype = atom.workspace.getActivePane().__proto__
+    originalAddItem = @panePrototype.addItem
+    @panePrototype.addItem = addItem
+      
+  deactivate: ->
+    @subs.dispose()
+    @panePrototype.addItem = originalAddItem
+  
+  

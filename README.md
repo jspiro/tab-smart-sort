@@ -4,7 +4,7 @@ Sorts tabs into logical order as they are added.
 
 ![Image inserted by Atom editor package auto-host-markdown-image](http://i.imgur.com/CahO4eD.gif)
 
-A simple package to order tabs in a logical fashion as they are added.  The order is based on any sort priority of path, extension, and file name.  The order can be customized in settings.  After you use this for a while you will always know where to look in the tab bar.  No more hunting around.
+A simple package to order tabs in a logical fashion as they are added.  The order can be customized in settings.  The order is based on any sort priority of path, extension, and file name. Or the order can be set to match the vertical ordering of the expanded file-tree. After you use this for a while you will always know where to look in the tab bar.  No more hunting around.
 
 # Installation
   
@@ -18,7 +18,7 @@ Note that this extension only sorts tabs when they are added.  You may move the 
 
 # Sort Order Settings
 
-The sorting is based on the file path. There is a setting `Case Sensitive` that applies to the path. 
+The sorting is based on the file path. There is a setting `Case Sensitive` that applies to the path.
 
 You specify the priority of the different parts of the path using the `Ordering` setting.  Here are some suggestions ...
 
@@ -27,6 +27,10 @@ You specify the priority of the different parts of the path using the `Ordering`
 - "base, ext, dir". Simple ordering by file name.
 
 If a tab has no file path, such as the Settings Pane, it is considered a "special" tab and it is placed on the far left or far right based on the setting `Place Special Tabs On Right` which defaults to the left.
+
+# File Tree Order
+
+If the `Ordering` setting includes the term `filetree` then all other sort terms are ignored and the sort order will match the vertical order of the files in a fully expanded file tree.
 
 # License
 
