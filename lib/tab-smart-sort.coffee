@@ -8,12 +8,18 @@ sortTerms = caseSensitive = placeSpecialTabsOnRight = null
 originalAddItem = panePrototype = null
 
 class TabSmartSort
-  
-  configDefaults:
-    caseSensitive: no
-    ordering: 'dir, ext, base'
-    placeSpecialTabsOnRight: no
-  
+
+  config:
+    caseSensitive:
+      type: 'boolean'
+      default: no
+    ordering:
+      type: 'string'
+      default: 'dir, ext, base'
+    placeSpecialTabsOnRight:
+      type: 'boolean'
+      default: no
+
   activate: ->
     setOrdering = (order) ->
       sortTerms = (term.replace(/[^a-zA-Z]/g, '') for term in order.split /[\s,;:-]/)
