@@ -1,3 +1,6 @@
+### 0.1.4 - 2015-5-24
+- fixed adding duplicate tab
+
 ### 0.1.3 - 2015-5-24
 - fixed adding duplicate tab
 
