@@ -51,6 +51,7 @@ getSortStr = (item) ->
   sortStr
 
 addItem = (newItem) ->
+  if newItem in @items then return
   newSortStr = getSortStr newItem
   lastSortStr = ''
   for item, newIndex in @items
