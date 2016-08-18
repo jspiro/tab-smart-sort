@@ -56,7 +56,7 @@ getSortStr = (item) ->
   if not caseSensitive then sortStr = sortStr.toLowerCase()
   sortStr
 
-addItem = (newItem) ->
+addItem = (newItem, options) ->
   if newItem in @items then return
   newSortStr = getSortStr newItem
   lastSortStr = ''
@@ -64,6 +64,7 @@ addItem = (newItem) ->
     sortStr = getSortStr item
     if lastSortStr <= newSortStr < sortStr then break
     lastSortStr = sortStr
-  originalAddItem.call @, newItem, newIndex
-  
+  options.index = newIndex
+  originalAddItem.call this, newItem, options
+
 module.exports = new TabSmartSort
