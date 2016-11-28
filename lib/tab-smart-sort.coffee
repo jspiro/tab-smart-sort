@@ -35,6 +35,8 @@ class TabSmartSort
       (val) -> setOrdering val
     @disp.push atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight',
       (val) -> placeSpecialTabsOnRight = val
+    @disp.push atom.commands.add 'atom-workspace',
+      'tab-smart-sort:sort-existing-tabs': () -> sortAllItems()
 
     panePrototype = atom.workspace.getActivePane().__proto__
     originalAddItem = panePrototype.addItem
@@ -66,5 +68,58 @@ addItem = (newItem, options) ->
     lastSortStr = sortStr
   options.index = newIndex
   originalAddItem.call this, newItem, options
+
+sortString = (x, y) ->
+  if x == y
+    0
+  else if x < y
+    -1
+  else
+    1
+
+# TODO this can be made faster
+sortAllItems = ->
+  pane = atom.workspace.getActivePane()
+
+  # This stores both the original item and the sort string because:
+  #
+  #   1) pane.moveItem requires an item, not a string
+  #
+  #   2) If two items have the same sort string, we need to distinguish
+  #      between them
+  #
+  #   3) It's faster to call getSortStr once per item, rather than multiple
+  #      times inside the sort function
+  #
+  items = pane.getItems().map (item) ->
+    item: item
+    path: getSortStr item
+
+  # This must use slice because sort modifies the original array
+  sorted = items.slice().sort (x, y) -> sortString x.path, y.path
+
+  index = 0
+  length = items.length
+
+  while index < length
+    item = items[index]
+    other = sorted[index]
+
+    if item == other
+      # We only increment the index when the two items match
+      index = index + 1
+
+    else
+      # Because this algorithm moves from left-to-right, all the previous
+      # items are already sorted, so the newIndex must be to the right
+      newIndex = sorted.indexOf item
+
+      # This must match the algorithm for pane.moveItem
+      items.splice index, 1
+      items.splice newIndex, 0, item
+
+      pane.moveItem item.item, newIndex
+
+  undefined
 
 module.exports = new TabSmartSort
