@@ -112,7 +112,8 @@ sortAllItems = ->
     else
       # Because this algorithm moves from left-to-right, all the previous
       # items are already sorted, so the newIndex must be to the right
-      newIndex = sorted.indexOf item
+      # TODO verify that this is never -1
+      newIndex = sorted.indexOf item, index + 1
 
       # This must match the algorithm for pane.moveItem
       items.splice index, 1
