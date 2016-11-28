@@ -8,7 +8,7 @@ sortTerms = caseSensitive = placeSpecialTabsOnRight = null
 originalAddItem = panePrototype = null
 
 class TabSmartSort
-  
+
   config:
     caseSensitive:
       type: 'boolean'
@@ -19,23 +19,23 @@ class TabSmartSort
     placeSpecialTabsOnRight:
       type: 'boolean'
       default: no
-  
+
   activate: ->
     setOrdering = (order) ->
       sortTerms = (term.replace(/[^a-zA-Z]/g, '') for term in order.split /[\s,;:-]/)
-      
+
     caseSensitive           = atom.config.get 'tab-smart-sort.caseSensitive'
-    setOrdering               atom.config.get 'tab-smart-sort.ordering' 
+    setOrdering               atom.config.get 'tab-smart-sort.ordering'
     placeSpecialTabsOnRight = atom.config.get 'tab-smart-sort.placeSpecialTabsOnRight'
-    
+
     @disp = []
-    @disp.push atom.config.observe 'tab-smart-sort.caseSensitive', 
+    @disp.push atom.config.observe 'tab-smart-sort.caseSensitive',
       (val) -> caseSensitive = val
-    @disp.push atom.config.observe 'tab-smart-sort.ordering', 
+    @disp.push atom.config.observe 'tab-smart-sort.ordering',
       (val) -> setOrdering val
-    @disp.push atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight', 
+    @disp.push atom.config.observe 'tab-smart-sort.placeSpecialTabsOnRight',
       (val) -> placeSpecialTabsOnRight = val
-    
+
     panePrototype = atom.workspace.getActivePane().__proto__
     originalAddItem = panePrototype.addItem
     panePrototype.addItem = addItem
@@ -43,9 +43,9 @@ class TabSmartSort
   deactivate: ->
     for disp in @disp then disp.dispose()
     panePrototype.addItem = originalAddItem
-  
+
 getSortStr = (item) ->
-  if not (path = item.getPath?()) 
+  if not (path = item.getPath?())
     return (if placeSpecialTabsOnRight then '~~~~~~~~~' else '')
   sortStr = ''
   for term in sortTerms
