@@ -1,3 +1,6 @@
+### 0.1.5 - 2016-8-18
+- support latest atom
+
 ### 0.1.4 - 2015-5-24
 - fixed adding duplicate tab
 
