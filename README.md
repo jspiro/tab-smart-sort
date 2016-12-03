@@ -30,5 +30,4 @@ If a tab has no file path, such as the Settings Pane, it is considered a "specia
 
 # License
 
-tab-smart-sort is copyright Mark Hahn using the MIT license.
-
+MIT license.

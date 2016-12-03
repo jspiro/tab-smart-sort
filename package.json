@@ -1,9 +1,9 @@
 {
   "name": "tab-smart-sort",
   "main": "./lib/tab-smart-sort",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Sorts tabs into logical order as they are added.",
-  "repository": "https://github.com/mark-hahn/tab-smart-sort",
+  "repository": "https://github.com/jspiro/tab-smart-sort",
   "license": "MIT",
   "engines": {
     "atom": ">0.130.0"
