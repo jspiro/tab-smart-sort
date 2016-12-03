@@ -121,6 +121,7 @@ sortAllItems = ->
 
       pane.moveItem item.item, newIndex
 
+  # This is to prevent `while` from returning an array
   undefined
 
 module.exports = new TabSmartSort
