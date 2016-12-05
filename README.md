@@ -16,6 +16,8 @@ Simply install this and every time a new tab is added it will be placed in the l
 
 Note that this extension only sorts tabs when they are added.  You may move the tabs around manually and they will stay in that position, even after a reload.
 
+If you'd like to (re)sort on demand, this plugin also has a `sort` command.
+
 # Sort Order Settings
 
 The sorting is based on the file path. There is a setting `Case Sensitive` that applies to the path. 

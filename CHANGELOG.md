@@ -1,4 +1,7 @@
-### 0.1.6 - 2016-12-2
+### 0.3 - 2016-12-4
+- `sort` command added
+
+### 0.2 - 2016-12-2
 - jspiro is the new maintainer
 
 ### 0.1.5 - 2016-8-18
